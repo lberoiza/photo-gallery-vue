@@ -1,0 +1,28 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    },
+    {
+      "path": "./tsconfig.app.json"
+    }
+  ],
+  "compilerOptions": {
+    "baseUrl": "/home/lberoiza/Projects/Astro/photo-gallery",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ],
+      "@/components": [
+        "src/components/*"
+      ],
+      "@/models": [
+        "src/models/*"
+      ],
+      "@/data": [
+        "src/data/*"
+      ]
+    }
+  }
+}
