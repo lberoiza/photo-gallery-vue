@@ -34,11 +34,10 @@ const previousPhoto = () => {
 </script>
 
 <template>
-  <section class="details" :class="shouldShowDetails ? 'show-details' : ''" @keydown.esc="closeDialog">
-    <div class="details__close" @click="closeDialog">
-    </div>
+  <section class="details" :class="shouldShowDetails ? 'show-details' : ''">
+    <div class="details__close" @click="closeDialog"></div>
     <div class="details__navegation-controls details__control-back" v-if="hasPrevious">
-      <span @click="previousPhoto">{{ '< Prev.' }}</span>
+      <span @click="previousPhoto">{{ '<' }}</span>
     </div>
     <h2 class="details__photo-title">{{ selectedPhoto?.alt }}</h2>
     <div class="details__photo-image-container">
@@ -47,7 +46,7 @@ const previousPhoto = () => {
     <p class="details__photo-description" v-html="selectedPhoto?.description"></p>
 
     <div class="details__navegation-controls details__control-forward" v-if="hasNext">
-      <span @click="nextPhoto">{{ 'Next >' }}</span>
+      <span @click="nextPhoto">{{ '>' }}</span>
     </div>
   </section>
 </template>
@@ -55,8 +54,10 @@ const previousPhoto = () => {
 <style scoped>
 
 .details {
-  --background-color: #aaaaaa95;
-  --photo-controls-width: 6rem;
+  --title-size: 1rem;
+  --text-size: 1rem;
+  --background-color-opacity: #AAAAAABC;
+  --photo-controls-width: fit-content;
   --photo-controls-padding: 2rem;
   --container-display: none;
   --detail-animation: details-show 0.5s ease-in-out both;
@@ -74,14 +75,14 @@ const previousPhoto = () => {
   padding: 1rem;
 
   display: none;
-  grid-template-rows: 3rem 1fr 10rem;
-  grid-template-columns: var(--photo-controls-width) 1fr var(--photo-controls-width);
+  grid-template-rows: repeat(3, min-content);
+  grid-template-columns: 1fr;
   place-items: center;
-  gap: 1rem;
   grid-template-areas:
-        ".    photo-title close"
-        "back photo-container forward"
-        ".    photo-description .";
+    "photo-title"
+    "photo-container"
+    "photo-description";
+  gap: 1rem;
   overflow: auto;
 }
 
@@ -103,13 +104,15 @@ const previousPhoto = () => {
 .details__close {
   --close-color: var(--color-text);
   --color-transition: background-color 0.3s ease-in-out;
+  --x-thickness: 2px;
 
-  font-size: 3rem;
-  grid-area: close;
-
-  width: 3rem;
-  height: 3rem;
+  grid-area: photo-container;
   position: relative;
+
+  place-self: start end;
+  width: 1rem;
+  height: 1rem;
+  background-color: var(--background-color-opacity);
 }
 
 .details__close::before {
@@ -118,7 +121,7 @@ const previousPhoto = () => {
   top: 5%;
   left: 10%;
   width: 115%;
-  height: 5px;
+  height: var(--x-thickness);
   background-color: var(--close-color);
   transform: rotate(40deg);
   transform-origin: 0 0;
@@ -131,7 +134,7 @@ const previousPhoto = () => {
   top: 5%;
   right: 10%;
   width: 115%;
-  height: 5px;
+  height: var(--x-thickness);
   background-color: var(--close-color);
   transform: rotate(-40deg);
   transform-origin: 100% 0;
@@ -147,45 +150,10 @@ const previousPhoto = () => {
 .details__photo-title {
   grid-area: photo-title;
 
-  font-size: 2rem;
+  text-align: center;
+  font-size: var(--title-size);
   text-transform: uppercase;
   letter-spacing: 0.4rem;
-}
-
-.details__control-back {
-  grid-area: back;
-}
-
-.details__photo-image-container {
-  grid-area: photo-container;
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-  user-select: none;
-  //scroll-behavior: smooth;
-  //scrollbar-width: thin;
-  //scrollbar-color: var(--color-text) transparent;
-}
-
-
-.details__control-forward {
-  grid-area: forward;
-  place-self: center;
-}
-
-.details__photo-description {
-  grid-area: photo-description;
-  place-self: start;
-  width: 100%;
-  height: 100%;
-  padding: 1rem;
-  font-size: 1.3rem;
-}
-
-.details__photo {
-  width: 100%;
-  display: block;
 }
 
 .details__navegation-controls {
@@ -195,11 +163,91 @@ const previousPhoto = () => {
   padding: 0.5rem;
   transition: background-color 0.3s ease-in-out;
   user-select: none;
+  z-index: 1;
+  background-color: var(--background-color-opacity);
 }
 
 .details__navegation-controls:hover {
-  background-color: var(--background-color);
+  background-color: var(--background-color-opacity);
 }
+
+
+.details__control-back {
+  grid-area: photo-container;
+  place-self: center start;
+  background-color: var(--background-color-opacity);
+}
+
+.details__control-forward {
+  grid-area: photo-container;
+  place-self: center end;
+}
+
+.details__photo-image-container {
+  grid-area: photo-container;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  user-select: none;
+}
+
+.details__photo-description {
+  grid-area: photo-description;
+  place-self: start;
+  width: 100%;
+  height: 100%;
+  padding: 0 1rem;
+  font-size: var(--text-size);
+}
+
+.details__photo {
+  width: 100%;
+  display: block;
+}
+
+
+
+@media (min-width: 768px) {
+  .details {
+    --title-size: 2rem;
+    --text-size: 1.3rem;
+  }
+
+
+  .details {
+
+    grid-template-rows: 3rem 1fr 8rem;
+    grid-template-columns: var(--photo-controls-width) 1fr var(--photo-controls-width);
+    place-items: center;
+    gap: 1rem;
+    grid-template-areas:
+        ".    photo-title close"
+        "back photo-container forward"
+        ".    photo-description .";
+  }
+
+  .details__close {
+    --x-thickness: 3px;
+
+    grid-area: close;
+    background-color: unset;
+  }
+
+  .details__control-back {
+    grid-area: back;
+  }
+
+  .details__control-forward {
+    grid-area: forward;
+  }
+
+  .details__navegation-controls {
+    background-color: unset;
+  }
+
+}
+
 
 
 </style>

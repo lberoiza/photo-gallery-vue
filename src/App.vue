@@ -79,7 +79,7 @@ main {
 }
 
 .main__title {
-  font-size: 3rem;
+  font-size: 1rem;
   text-align: center;
   margin-bottom: 2rem;
   text-transform: uppercase;
@@ -105,4 +105,11 @@ main {
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 2rem;
 }
+
+@media (min-width: 768px) {
+  .main__title {
+    font-size: 3rem;
+  }
+}
+
 </style>

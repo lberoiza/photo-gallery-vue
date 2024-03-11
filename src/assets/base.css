@@ -17,6 +17,8 @@
 
 html {
   color: var(--color-text);
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-tertiary) var(--color-background);
 }
 
 body::before {
@@ -30,5 +32,4 @@ body::before {
   z-index: -1;
   background: url("/images/background.jpg") no-repeat center center fixed;
   background-size: cover;
-//object-position: center;
 }

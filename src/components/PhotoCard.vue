@@ -27,7 +27,7 @@ const imageClicked = () => {
       <div class="card__img-container">
         <img class="card__img" :src=photo.url :alt=photo.alt />
       </div>
-      <figcaption class="card__info">{{ photo.description }}</figcaption>
+      <figcaption class="card__info">{{ photo.alt }}</figcaption>
     </figure>
   </article>
 </template>
@@ -85,7 +85,7 @@ const imageClicked = () => {
 .card__info {
   grid-area: photo;
   place-self: end center;
-  width: 90%;
+  max-width: 90%;
   font-size: 1.5rem;
   background-color: #00000090;
   border-radius: 0.5rem;
@@ -93,6 +93,9 @@ const imageClicked = () => {
   padding: 1rem;
   text-shadow: 2px 2px 2px #000000;
   letter-spacing: 0.2rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 
