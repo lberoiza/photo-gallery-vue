@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-
+import { ref, defineProps } from "vue";
 import type { Photo } from "@/models/Photo.model.ts";
 
 
@@ -10,11 +10,12 @@ type Props = {
 
 const props = defineProps<Props>();
 const photo = props.photo;
+const emit = defineEmits(['setSelectedPhoto']);
+
 
 
 const imageClicked = () => {
-  console.log("Image clicked, photo: ", photo);
-  // setState({selectedPhoto: photo, showDetails: true});
+  emit('setSelectedPhoto', photo);
 }
 
 

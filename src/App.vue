@@ -1,9 +1,51 @@
 <script setup lang="ts">
-import {galleryInformation} from "@/data/data";
+import { ref } from "vue";
 import PhotoCard from "@/components/PhotoCard.vue";
 import PhotoDetails from "@/components/PhotoDetails.vue";
+import type { Photo } from "@/models/Photo.model";
+import { galleryInformation } from "@/data/data";
+import { usePhotoNavigation } from "@/hooks/usePhotoNavigation";
 
 const photos = galleryInformation.photos;
+const {getNextPhoto, getPreviousPhoto} = usePhotoNavigation(photos);
+
+
+const selectedPhoto = ref<Photo | undefined>(undefined);
+const showDetails = ref<boolean>(false);
+
+const hastNext = () => {
+  if(!selectedPhoto.value) return false;
+  return getNextPhoto(selectedPhoto.value!) !== null;
+}
+
+const hasPrevious = () => {
+  if(!selectedPhoto.value) return false;
+  return getPreviousPhoto(selectedPhoto.value!) !== null;
+}
+
+
+const handleSelectedPhoto = (photo: Photo) => {
+  selectedPhoto.value = photo;
+  showDetails.value = true;
+}
+
+const handleHideDetails = () => {
+  showDetails.value = false;
+}
+
+const handleNextPhoto = (photo: Photo) => {
+  const nextPhoto = getNextPhoto(photo);
+  if(nextPhoto) {
+    selectedPhoto.value = nextPhoto;
+  }
+}
+
+const handlePreviousPhoto = (photo: Photo) => {
+  const previousPhoto = getPreviousPhoto(photo);
+  if(previousPhoto) {
+    selectedPhoto.value = previousPhoto;
+  }
+}
 
 </script>
 
@@ -11,9 +53,17 @@ const photos = galleryInformation.photos;
   <main>
     <h1 class="main__title">{{ galleryInformation.title }}</h1>
     <div class="main__imagecontainer">
-      <PhotoCard v-for="photo in photos" :photo=photo :key=photo.id  />
+      <PhotoCard v-for="photo in photos" :photo=photo :key=photo.id @setSelectedPhoto="handleSelectedPhoto"/>
     </div>
-    <PhotoDetails />
+    <PhotoDetails
+        :selectedPhoto="selectedPhoto"
+        :show-details="showDetails"
+        :hasNext="hastNext()"
+        :hasPrevious="hasPrevious()"
+        @hideDetails="handleHideDetails"
+        @nextPhoto="handleNextPhoto"
+        @previousPhoto="handlePreviousPhoto"
+    />
   </main>
 </template>
 

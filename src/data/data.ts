@@ -1,5 +1,5 @@
 import type { Photo } from "@/models/Photo.model.ts";
-import type { GalleryInformation } from "@/models/GalleryInformation.ts";
+import type { GalleryInformation } from "@/models/GalleryInformation.model.ts";
 
 const photos: Photo[] = [
   {

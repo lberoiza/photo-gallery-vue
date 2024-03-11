@@ -1,71 +1,93 @@
 <script setup lang="ts">
 
 import { Photo } from "@/models/Photo.model.ts";
+import { computed } from "vue";
 
 
 type Props = {
-  photo?: Photo;
+  selectedPhoto: Photo | undefined;
+  showDetails: boolean;
+  hasNext: boolean;
+  hasPrevious: boolean;
 }
 
 const props = defineProps<Props>();
-const photo = props.photo;
+const selectedPhoto = computed(() => props.selectedPhoto);
+const shouldShowDetails = computed(() => props.showDetails && selectedPhoto.value !== undefined);
+const hasNext = computed(() => props.hasNext);
+const hasPrevious = computed(() => props.hasPrevious);
+
+const emit = defineEmits(['hideDetails', 'nextPhoto', 'previousPhoto']);
+
+const closeDialog = () => {
+  emit('hideDetails');
+}
+
+const nextPhoto = () => {
+  emit('nextPhoto', selectedPhoto.value);
+}
+
+const previousPhoto = () => {
+  emit('previousPhoto', selectedPhoto.value);
+}
 
 </script>
 
 <template>
-  <section class="details hide-details">
-    <article class="details__container">
-      <div class="details__photo-controls">
-        <span> B </span>
-      </div>
-      <div class="details__photo-container">
-        <h2 class="details__photo-title">{{ photo?.alt }}</h2>
-        <div class="details__photo-image-container">
-          <img :src=photo?.url alt={photo.alt} class="details__photo">
-        </div>
-        <p class="details__photo-description">{{ photo?.description }}</p>
-      </div>
+  <section class="details" :class="shouldShowDetails ? 'show-details' : ''" @keydown.esc="closeDialog">
+    <div class="details__close" @click="closeDialog">
+    </div>
+    <div class="details__navegation-controls details__control-back" v-if="hasPrevious">
+      <span @click="previousPhoto">{{ '< Prev.' }}</span>
+    </div>
+    <h2 class="details__photo-title">{{ selectedPhoto?.alt }}</h2>
+    <div class="details__photo-image-container">
+      <img :src=selectedPhoto?.url alt={photo.alt} class="details__photo">
+    </div>
+    <p class="details__photo-description" v-html="selectedPhoto?.description"></p>
 
-      <div class="details__photo-controls">
-        <span> F </span>
-      </div>
-    </article>
+    <div class="details__navegation-controls details__control-forward" v-if="hasNext">
+      <span @click="nextPhoto">{{ 'Next >' }}</span>
+    </div>
   </section>
 </template>
 
 <style scoped>
 
 .details {
-  --background-color: #aaaaaa90;
-  --photo-controls-width: 5rem;
+  --background-color: #aaaaaa95;
+  --photo-controls-width: 6rem;
   --photo-controls-padding: 2rem;
   --container-display: none;
   --detail-animation: details-show 0.5s ease-in-out both;
-  color: black;
-}
-
-.show-details {
-  --container-display: flex;
-  --detail-animation: details-show 0.5s ease-in-out;
-}
-
-.hide-details {
-  --container-display: none;
-  --detail-animation: details-show 0.5s ease-in-out reverse both;
+  --popup-background-color: #000000D7;
 }
 
 .details {
-  display: var(--container-display);
+  color: var(--color-text);
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: var(--background-color);
+  background-color: var(--popup-background-color);
+  padding: 1rem;
 
+  display: none;
+  grid-template-rows: 3rem 1fr 10rem;
+  grid-template-columns: var(--photo-controls-width) 1fr var(--photo-controls-width);
+  place-items: center;
+  gap: 1rem;
+  grid-template-areas:
+        ".    photo-title close"
+        "back photo-container forward"
+        ".    photo-description .";
+  overflow: auto;
+}
 
-  justify-content: center;
-  align-items: center;
+.show-details {
+  display: grid;
+  animation: details-show 0.5s ease-in-out;
 }
 
 @keyframes details-show {
@@ -77,70 +99,107 @@ const photo = props.photo;
   }
 }
 
-.details__photo-controls {
-  padding: var(--photo-controls-padding);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: var(--background-color);
-  border-radius: 50%;
-}
 
-.details__container {
-  width: 90%;
-  height: 90%;
-  display: grid;
-  grid-template-columns: var(--photo-controls-width) 1fr var(--photo-controls-width);
-  grid-template-rows: min-content 1fr;
-  grid-template-areas:
-        "close close close"
-        "back photo-container forward";
+.details__close {
+  --close-color: var(--color-text);
+  --color-transition: background-color 0.3s ease-in-out;
 
-  justify-items: center;
-  align-items: center;
-  animation: details-show 0.5s ease-in-out;
-
-}
-
-.details__container::before {
-  font-family: Calibri, sans-serif;
-  content: "X";
-  grid-area: close;
   font-size: 3rem;
-  place-self: start end;
-  padding: 2rem;
-  font-weight: 700;
+  grid-area: close;
+
+  width: 3rem;
+  height: 3rem;
+  position: relative;
 }
 
-.details__photo-container {
-  grid-area: photo-container;
-  width: 100%;
-
-  display: grid;
-  justify-items: center;
-  gap: 2rem;
+.details__close::before {
+  content: "";
+  position: absolute;
+  top: 5%;
+  left: 10%;
+  width: 115%;
+  height: 5px;
+  background-color: var(--close-color);
+  transform: rotate(40deg);
+  transform-origin: 0 0;
+  transition: var(--color-transition);
 }
+
+.details__close::after {
+  content: "";
+  position: absolute;
+  top: 5%;
+  right: 10%;
+  width: 115%;
+  height: 5px;
+  background-color: var(--close-color);
+  transform: rotate(-40deg);
+  transform-origin: 100% 0;
+  transition: var(--color-transition);
+}
+
+.details__close:hover {
+  cursor: pointer;
+  --close-color: darkred;
+}
+
 
 .details__photo-title {
-  font-size: 3rem;
+  grid-area: photo-title;
+
+  font-size: 2rem;
   text-transform: uppercase;
   letter-spacing: 0.4rem;
-  text-shadow: var(--background-color) 0.5rem 0.5rem 0.5rem 0.5rem;
+}
+
+.details__control-back {
+  grid-area: back;
+}
+
+.details__photo-image-container {
+  grid-area: photo-container;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  user-select: none;
+  //scroll-behavior: smooth;
+  //scrollbar-width: thin;
+  //scrollbar-color: var(--color-text) transparent;
+}
+
+
+.details__control-forward {
+  grid-area: forward;
+  place-self: center;
 }
 
 .details__photo-description {
-  font-size: 2rem;
+  grid-area: photo-description;
+  place-self: start;
   width: 100%;
-  background-color: var(--background-color);
-  padding: 2rem;
-  border-radius: 0.5rem;
-
+  height: 100%;
+  padding: 1rem;
+  font-size: 1.3rem;
 }
 
 .details__photo {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  display: block;
 }
+
+.details__navegation-controls {
+  font-size: 1.5rem;
+  cursor: pointer;
+  border-radius: 0.3rem;
+  padding: 0.5rem;
+  transition: background-color 0.3s ease-in-out;
+  user-select: none;
+}
+
+.details__navegation-controls:hover {
+  background-color: var(--background-color);
+}
+
 
 </style>
