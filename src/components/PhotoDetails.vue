@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { Photo } from "@/models/Photo.model.ts";
+import type { Photo } from "@/models/Photo.model";
 import { computed } from "vue";
 
 
