@@ -41,7 +41,7 @@ const previousPhoto = () => {
     </div>
     <h2 class="details__photo-title">{{ selectedPhoto?.alt }}</h2>
     <div class="details__photo-image-container">
-      <img :src=selectedPhoto?.url alt={photo.alt} class="details__photo">
+      <img :src=selectedPhoto?.url alt={photo.alt} class="details__photo" :style="{aspectRatio: selectedPhoto?.aspectRatio}">
     </div>
     <p class="details__photo-description" v-html="selectedPhoto?.description"></p>
 
@@ -190,6 +190,7 @@ const previousPhoto = () => {
   overflow-y: auto;
   overflow-x: hidden;
   user-select: none;
+  scrollbar-width: thin;
 }
 
 .details__photo-description {
