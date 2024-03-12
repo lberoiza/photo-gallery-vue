@@ -3,4 +3,5 @@ export interface Photo {
   url: string;
   alt: string;
   description: string;
+  aspectRatio?: string;
 }
