@@ -25,7 +25,7 @@ const imageClicked = () => {
   <article class="card" @click="imageClicked">
     <figure class="card__picture">
       <div class="card__img-container">
-        <img class="card__img" :src=photo.url :alt=photo.alt />
+        <img class="card__img" :src=photo.url :alt=photo.alt :style="{aspectRatio: photo.aspectRatio}"/>
       </div>
       <figcaption class="card__info">{{ photo.alt }}</figcaption>
     </figure>
@@ -37,7 +37,10 @@ const imageClicked = () => {
 .card {
   --card-max-width: 25rem;
   --card-max-height: 25rem;
-  --transition-time: 0.1s;
+  --transform-transition-time: 0.2s;
+  --shadow-time: 0.3s;
+  --card-shadow-color: #AAAAAAFF;
+  --card-shadow-color-hover: #7b42a8;
 
   margin: 0 auto;
   width: 100%;
@@ -46,14 +49,14 @@ const imageClicked = () => {
   overflow: hidden;
   border-radius: 1rem;
   cursor: pointer;
-  box-shadow: 0.5rem 0.5rem 1rem 0.5rem #00000090;
-  transition: transform var(--transition-time) ease-in-out,
-  box-shadow var(--transition-time) ease-in-out;
+  box-shadow: 0 0 1.3rem 0.3rem var(--card-shadow-color);
+  transition: transform var(--transform-transition-time) ease-in-out,
+              box-shadow var(--shadow-time) ease-in-out;
 }
 
 .card:hover {
   transform: scale(1.05);
-  box-shadow: 1rem 1rem 2rem 1rem #00000090;
+  box-shadow: 0 0 1.3rem 0.3rem var(--card-shadow-color-hover);
 }
 
 .card__picture {
