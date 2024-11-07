@@ -4,10 +4,10 @@ import type { GalleryInformation } from "@/models/GalleryInformation.model.ts";
 const photos: Photo[] = [
   {
     id: "1",
-    url: "https://images7.alphacoders.com/886/886915.jpg",
-    alt: "Waterfall in the forest",
-    description: "Waterfall in the forest",
-    aspectRatio: '4/3'
+    url: "https://db637ll7r1kva.cloudfront.net/app/uploads/2023/05/31130506/GettyImages-167392901-770x529.jpg",
+    alt: "Waterfall Salto del Laja",
+    description: "Waterfall Salto del Laja, Chile",
+    aspectRatio: '644/442'
   },
   {
     id: "2",
